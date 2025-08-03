@@ -4,21 +4,6 @@
 #include <IHcApplication.h>
 #include <QObject>
 
-enum HcPluginType {
-    PluginWidget,   // plugin is designed and written as a ui interface widget
-    PluginWorker    // plugin is written to be run in the background
-};
-
-class IHcPluginBase : public QObject {
-    Q_OBJECT
-
-public:
-    virtual ~IHcPluginBase() = default;
-
-    virtual auto PluginName() -> std::string  = 0;
-    virtual auto PluginType() -> HcPluginType = 0;
-};
-
 class IHcPlugin {
 public:
     virtual ~IHcPlugin() = default;
