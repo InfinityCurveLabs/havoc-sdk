@@ -143,9 +143,9 @@ public:
     // havoc server authentication & api methods
     //
 
-    virtual auto User()   const -> QString = 0;
-    virtual auto Token()  const -> QString = 0;
-    virtual auto Server() const -> QString = 0;
+    virtual auto User()   const -> std::string = 0;
+    virtual auto Token()  const -> std::string = 0;
+    virtual auto Server() const -> std::string = 0;
 
     virtual auto ApiSend(
         const std::string& endpoint,
