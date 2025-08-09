@@ -4,14 +4,21 @@
 #include <QWidget>
 #include <QMainWindow>
 #include <QColor>
-
 #include <string>
-
 #include <IHcAgent.h>
 
-template <typename T>
-using HcFnCallbackCtx = auto ( * ) ( const T& context ) -> void;
-using HcFnCallback    = auto ( * ) ( void ) -> void;
+template <typename T = void>
+struct HcFnCallbackHelper {
+    using type = std::function<void(const T&)>;
+};
+
+template <>
+struct HcFnCallbackHelper<void> {
+    using type = std::function<void()>;
+};
+
+template <typename T = void>
+using HcFnCallback = typename HcFnCallbackHelper<T>::type;
 
 class IHcLogs
 {
@@ -132,135 +139,89 @@ public:
         BottomDockWidget = 2,
     };
 
+    enum class MenuActionFlags : uint32_t {
+        None           = 0,
+        PositionFirst  = 1 << 0,
+        PositionMiddle = 1 << 1,
+        PositionLast   = 1 << 2,
+        MultiSelect    = 1 << 3,
+
+        Default = PositionMiddle | MultiSelect,
+    };
+
     //
-    // generic ui apis
+    // generic window ui apis
     //
 
-    virtual auto StyleSheet()       -> QString = 0;
-    virtual auto MainWindowWidget() -> QMainWindow* = 0;
+    virtual auto HcWindowStyleSheet() -> std::string  = 0;
+    virtual auto HcWindowMainWidget() -> QMainWindow* = 0;
 
     //
     // havoc server authentication & api methods
     //
 
-    virtual auto User()   const -> std::string = 0;
-    virtual auto Token()  const -> std::string = 0;
-    virtual auto Server() const -> std::string = 0;
-
-    virtual auto ApiSend(
+    virtual auto HcTeamserverUser()  const -> std::string = 0;
+    virtual auto HcTeamserverToken() const -> std::string = 0;
+    virtual auto HcTeamserverIp()    const -> std::string = 0;
+    virtual auto HcTeamserverName()  const -> std::string = 0;
+    virtual auto HcTeamserverSendApi(
         const std::string& endpoint,
         const std::string& body,
         const bool         keep_alive
     ) -> std::tuple<int, std::string> = 0;
 
+    //
+    // agent api
+    //
+
+    virtual auto HcAgentObject(
+        const std::string& uuid
+    ) -> std::optional<IHcAgent*> = 0;
+
+    virtual auto HcAgents(
+        void
+    ) -> std::vector<IHcAgent*> = 0;
 
     //
     // agent page apis
     //
 
-    virtual auto PageAgentAddTab(
+    virtual auto HcAgentPageAddTab(
         const std::string& name,
         const QIcon&       icon,
         QWidget*           widget
     ) -> void = 0;
 
-    //
-    // register actions callbacks
-    //
-
-    /*!
-     * @brief
-     *  register agent action
-     *
-     * @param action_name
-     *  action name
-     *
-     * @param action_icon
-     *  action icon
-     *
-     * @param action_func
-     *  agent function
-     *
-     * @param agent_type
-     *  agent type to only
-     *  specify the action to
-     */
-    virtual auto RegisterAgentAction(
-        const std::string&           action_name,
-        const QIcon&                 action_icon,
-        HcFnCallbackCtx<std::string> action_func,
-        const std::string&           agent_type
-    ) -> void = 0;
-
-    /*!
-     * @brief
-     *  register agent action for
-     *  all available agents
-     *
-     * @param action_name
-     *  action name
-     *
-     * @param action_icon
-     *  action icon
-     *
-     * @param action_func
-     *  agent function
-     */
-    virtual auto RegisterAgentAction(
-        const std::string&           action_name,
-        const QIcon&                 action_icon,
-        HcFnCallbackCtx<std::string> action_func
-    ) -> void = 0;
-
-    /*!
-     * @brief
-     *  register agent action for
-     *  all available agents
-     *
-     * @param action_name
-     *  action name
-     *
-     * @param action_func
-     *  agent function
-     *
-     * @param multi_select
-     *  add the action to
-     *  the multi select
-     */
-    virtual auto RegisterAgentAction(
-        const std::string&           action_name,
-        HcFnCallbackCtx<std::string> action_func,
-        bool                         multi_select
-    ) -> void = 0;
-
-    /*!
-     * @brief
-     *  register an action under
-     *  the action menu
-     *
-     * @param action_name
-     *  action name
-     *
-     * @param action_icon
-     *  action icon
-     *
-     * @param action_func
-     *  action callback
-     */
-    virtual auto RegisterMenuAction(
+    virtual auto HcAgentPageRegisterAction(
         const std::string& action_name,
-        const QIcon&       action_icon,
-        HcFnCallback       action_func
+        HcFnCallback<>     action_func,
+        const QIcon&       action_icon = QIcon()
     ) -> void = 0;
 
-    virtual auto RegisterServerWidget(
-        const std::string&   name,
-        const QIcon&         icon,
-        const QWidget*       widget,
-        const WidgetPosition position
+    //
+    // register agent menu actions
+    //
+
+    virtual auto HcAgentRegisterMenuAction(
+        const std::string&       agent_type,
+        const std::string&       action_name,
+        HcFnCallback<IHcAgent*>  callback,
+        const MenuActionFlags    flags = MenuActionFlags::Default,
+        const QIcon&             icon  = QIcon()
     ) -> void = 0;
 
-    virtual auto RegisterCallback(
+    virtual auto HcAgentRegisterMenuAction(
+        const std::string&       action_name,
+        HcFnCallback<IHcAgent*>  callback,
+        const MenuActionFlags    flags = MenuActionFlags::Default,
+        const QIcon&             icon  = QIcon()
+    ) -> void = 0;
+
+    //
+    // agent callback api
+    //
+
+    virtual auto HcAgentRegisterCallback(
         const std::string& callback_id,
         const std::function<void(
             const std::string agent_id,
@@ -270,16 +231,15 @@ public:
     ) -> void = 0;
 
     //
-    // agent api
+    // server page api
     //
 
-    virtual auto Agent(
-        const std::string& uuid
-    ) -> std::optional<IHcAgent*> = 0;
-
-    virtual auto Agents(
-        void
-    ) -> std::vector<IHcAgent*> = 0;
+    virtual auto HcServerPageAddWidget(
+        const std::string&   name,
+        const QIcon&         icon,
+        const QWidget*       widget,
+        const WidgetPosition position
+    ) -> void = 0;
 
     //
     // python api
@@ -303,13 +263,45 @@ public:
      *  of python related or native exceptions
      *  it will be returned as a std::exception
      */
-    virtual auto PythonContextRun(
+    virtual auto HcPythonContextRun(
         std::function<void()> function,
         bool                  concurrent
     ) -> void = 0;
 
-    virtual auto Theme()  -> IHcTheme* = 0;
+    //
+    // some util functions
+    //
+
+    virtual auto theme()  -> IHcTheme* = 0;
     virtual auto logger() -> IHcLogs* = 0;
 };
+
+inline auto operator | (
+    IHcApplication::MenuActionFlags lhs,
+    IHcApplication::MenuActionFlags rhs
+) -> IHcApplication::MenuActionFlags {
+    return static_cast<IHcApplication::MenuActionFlags>(
+        static_cast<std::underlying_type_t<IHcApplication::MenuActionFlags>>( lhs ) |
+        static_cast<std::underlying_type_t<IHcApplication::MenuActionFlags>>( rhs )
+    );
+}
+
+inline auto operator & (
+    IHcApplication::MenuActionFlags lhs,
+    IHcApplication::MenuActionFlags rhs
+) -> IHcApplication::MenuActionFlags {
+    return static_cast<IHcApplication::MenuActionFlags>(
+        static_cast<std::underlying_type_t<IHcApplication::MenuActionFlags>>( lhs ) &
+        static_cast<std::underlying_type_t<IHcApplication::MenuActionFlags>>( rhs )
+    );
+}
+
+inline auto operator ~ (
+    IHcApplication::MenuActionFlags f
+) -> IHcApplication::MenuActionFlags {
+    return static_cast<IHcApplication::MenuActionFlags>(
+        ~static_cast<std::underlying_type_t<IHcApplication::MenuActionFlags>>( f )
+    );
+}
 
 #endif //HCINTERFACE_IHCAPPLICATION_H
