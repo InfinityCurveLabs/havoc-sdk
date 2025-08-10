@@ -195,7 +195,7 @@ public:
     virtual auto HcAgentPageRegisterAction(
         const std::string& action_name,
         HcFnCallback<>     action_func,
-        const QIcon&       action_icon = QIcon()
+        const QIcon&       action_icon
     ) -> void = 0;
 
     //
@@ -206,15 +206,15 @@ public:
         const std::string&       agent_type,
         const std::string&       action_name,
         HcFnCallback<IHcAgent*>  callback,
-        const MenuActionFlags    flags = MenuActionFlags::Default,
-        const QIcon&             icon  = QIcon()
+        const MenuActionFlags    flags,
+        const QIcon&             icon
     ) -> void = 0;
 
     virtual auto HcAgentRegisterMenuAction(
         const std::string&       action_name,
         HcFnCallback<IHcAgent*>  callback,
-        const MenuActionFlags    flags = MenuActionFlags::Default,
-        const QIcon&             icon  = QIcon()
+        const MenuActionFlags    flags,
+        const QIcon&             icon
     ) -> void = 0;
 
     //
