@@ -9,7 +9,7 @@
 
 template <typename T = void>
 struct HcFnCallbackHelper {
-    using type = std::function<void(const T&)>;
+    using type = std::function<void(T)>;
 };
 
 template <>
@@ -210,26 +210,6 @@ public:
         const QIcon&             icon
     ) -> void = 0;
 
-    virtual auto HcAgentRegisterMenuAction(
-        const std::string&       action_name,
-        HcFnCallback<IHcAgent*>  callback,
-        const MenuActionFlags    flags,
-        const QIcon&             icon
-    ) -> void = 0;
-
-    //
-    // agent callback api
-    //
-
-    virtual auto HcAgentRegisterCallback(
-        const std::string& callback_id,
-        const std::function<void(
-            const std::string agent_id,
-            const std::string data,
-            const std::string context
-        )>& callback_fn
-    ) -> void = 0;
-
     //
     // server page api
     //
@@ -239,33 +219,6 @@ public:
         const QIcon&         icon,
         const QWidget*       widget,
         const WidgetPosition position
-    ) -> void = 0;
-
-    //
-    // python api
-    //
-
-    /*!
-     * @brief
-     *  run function under the context of the gil
-     *
-     * @param function
-     *  function to run that requires the
-     *  current thread context to hold the
-     *  python global interpreter lock
-     *
-     * @param concurrent
-     *  if the specified function needs to be
-     *  fun under a concurrent task/thread
-     *
-     * @return
-     *  the specified function raises any kind
-     *  of python related or native exceptions
-     *  it will be returned as a std::exception
-     */
-    virtual auto HcPythonContextRun(
-        std::function<void()> function,
-        bool                  concurrent
     ) -> void = 0;
 
     //
