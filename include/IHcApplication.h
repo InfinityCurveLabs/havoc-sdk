@@ -199,7 +199,7 @@ public:
     ) -> void = 0;
 
     //
-    // register agent menu actions
+    // register agent actions
     //
 
     virtual auto HcAgentRegisterMenuAction(
@@ -208,6 +208,11 @@ public:
         HcFnCallback<IHcAgent*>  callback,
         const MenuActionFlags    flags,
         const QIcon&             icon
+    ) -> void = 0;
+
+    virtual auto HcAgentRegisterInitialize(
+        const std::string&      agent_type,
+        HcFnCallback<IHcAgent*> callback
     ) -> void = 0;
 
     //
