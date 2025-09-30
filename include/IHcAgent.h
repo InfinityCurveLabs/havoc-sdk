@@ -50,6 +50,10 @@ public:
         const std::string& text
     ) -> void = 0;
 
+    virtual auto input_dispatch(
+        const std::string& input
+    ) -> void = 0;
+
     virtual auto remove() -> void = 0;
 };
 
