@@ -241,7 +241,7 @@ public:
 
     virtual auto HcPayloadGetProfile(
         const std::string& profile_name
-    ) -> std::tuple<std::string, QJsonDocument>;
+    ) -> std::tuple<std::string, QJsonDocument> = 0;
 
     virtual auto HcPayloadAddProfile(
         const std::string&   agent_type,
