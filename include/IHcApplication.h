@@ -233,11 +233,11 @@ public:
     virtual auto HcPayloadGenerate(
         const std::string&   agent_type,
         const QJsonDocument& configuration
-    ) -> std::vector<uint8_t>;
+    ) -> std::vector<uint8_t> = 0;
 
     virtual auto HcPayloadProfiles(
         const std::optional<std::string>& agent_type
-    ) -> std::vector<std::string>;
+    ) -> std::vector<std::string> = 0;
 
     virtual auto HcPayloadGetProfile(
         const std::string& profile_name
@@ -247,11 +247,11 @@ public:
         const std::string&   agent_type,
         const std::string&   profile_name,
         const QJsonDocument& configuration
-    ) -> void;
+    ) -> void = 0;
 
     virtual auto HcPayloadDeleteProfile(
         const std::string& profile_name
-    ) -> void;
+    ) -> void = 0;
 
     //
     // some util functions
