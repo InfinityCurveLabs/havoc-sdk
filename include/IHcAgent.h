@@ -56,7 +56,7 @@ public:
 
     virtual auto agent_execute(
         const QJsonDocument& data
-    ) -> QJsonDocument;
+    ) -> QJsonDocument = 0;
 
     virtual auto remove() -> void = 0;
 };
