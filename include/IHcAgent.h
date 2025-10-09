@@ -54,6 +54,10 @@ public:
         const std::string& input
     ) -> void = 0;
 
+    virtual auto agent_execute(
+        const QJsonDocument& data
+    ) -> QJsonDocument;
+
     virtual auto remove() -> void = 0;
 };
 
