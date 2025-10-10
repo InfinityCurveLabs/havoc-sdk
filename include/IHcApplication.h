@@ -194,7 +194,9 @@ public:
     virtual auto HcAgentPageAddTab(
         const std::string& name,
         const QIcon&       icon,
-        QWidget*           widget
+        QWidget*           widget,
+        TabWidgetFlags     flags,
+    WidgetPosition         position
     ) -> void = 0;
 
     virtual auto HcAgentPageRegisterAction(
@@ -218,18 +220,6 @@ public:
     virtual auto HcAgentRegisterInitialize(
         const std::string&      agent_type,
         HcFnCallback<IHcAgent*> callback
-    ) -> void = 0;
-
-    //
-    // agent page api
-    //
-
-    virtual auto HcAgentPageAddTabWidget(
-        const std::string& name,
-        const QIcon&       icon,
-        const QWidget*     widget,
-        TabWidgetFlags     flags,
-        WidgetPosition     position
     ) -> void = 0;
 
     //
