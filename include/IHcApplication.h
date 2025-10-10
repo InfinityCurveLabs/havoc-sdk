@@ -139,6 +139,11 @@ public:
         BottomDockWidget = 2,
     };
 
+    enum class TabWidgetFlags : uint32_t {
+        None          = 0,
+        DeleteOnClose = 1 << 0,
+    };
+
     enum class MenuActionFlags : uint32_t {
         None           = 0,
         PositionFirst  = 1 << 0,
@@ -216,6 +221,18 @@ public:
     ) -> void = 0;
 
     //
+    // agent page api
+    //
+
+    virtual auto HcAgentPageAddTabWidget(
+        const std::string& name,
+        const QIcon&       icon,
+        const QWidget*     widget,
+        TabWidgetFlags     flags,
+        WidgetPosition     position
+    ) -> void = 0;
+
+    //
     // server page api
     //
 
@@ -286,6 +303,34 @@ inline auto operator ~ (
 ) -> IHcApplication::MenuActionFlags {
     return static_cast<IHcApplication::MenuActionFlags>(
         ~static_cast<std::underlying_type_t<IHcApplication::MenuActionFlags>>( f )
+    );
+}
+
+inline auto operator | (
+    IHcApplication::TabWidgetFlags lhs,
+    IHcApplication::TabWidgetFlags rhs
+) -> IHcApplication::TabWidgetFlags {
+    return static_cast<IHcApplication::TabWidgetFlags>(
+        static_cast<std::underlying_type_t<IHcApplication::TabWidgetFlags>>( lhs ) |
+        static_cast<std::underlying_type_t<IHcApplication::TabWidgetFlags>>( rhs )
+    );
+}
+
+inline auto operator & (
+    IHcApplication::TabWidgetFlags lhs,
+    IHcApplication::TabWidgetFlags rhs
+) -> IHcApplication::TabWidgetFlags {
+    return static_cast<IHcApplication::TabWidgetFlags>(
+        static_cast<std::underlying_type_t<IHcApplication::TabWidgetFlags>>( lhs ) &
+        static_cast<std::underlying_type_t<IHcApplication::TabWidgetFlags>>( rhs )
+    );
+}
+
+inline auto operator ~ (
+    IHcApplication::TabWidgetFlags f
+) -> IHcApplication::TabWidgetFlags {
+    return static_cast<IHcApplication::TabWidgetFlags>(
+        ~static_cast<std::underlying_type_t<IHcApplication::TabWidgetFlags>>( f )
     );
 }
 
