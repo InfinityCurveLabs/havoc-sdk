@@ -154,6 +154,12 @@ public:
         Default = PositionMiddle | MultiSelect,
     };
 
+    virtual auto HcVersion(
+        uint32_t* major,
+        uint32_t* minor,
+        uint32_t* build
+    ) -> void = 0;
+
     //
     // generic window ui apis
     //
