@@ -222,6 +222,16 @@ public:
         HcFnCallback<IHcAgent*> callback
     ) -> void = 0;
 
+    virtual auto HcAgentRegisterRemove(
+        const std::string&      agent_type,
+        HcFnCallback<IHcAgent*> callback
+    ) -> void = 0;
+
+    virtual auto HcAgentRegisterHeartbeat(
+        const std::string&      agent_type,
+        HcFnCallback<IHcAgent*> callback
+    ) -> void = 0;
+
     //
     // server page api
     //
