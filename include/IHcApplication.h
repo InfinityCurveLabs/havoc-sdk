@@ -302,7 +302,7 @@ public:
         const std::string& note,
         const std::string& source,
         const std::string& pass_type
-    ) -> void = 0;
+    ) -> std::string = 0;
 
     virtual auto HcCredentialsEdit(
         const std::string& uuid,
