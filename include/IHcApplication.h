@@ -20,6 +20,17 @@ struct HcFnCallbackHelper<void> {
 template <typename T = void>
 using HcFnCallback = typename HcFnCallbackHelper<T>::type;
 
+typedef struct HcCredentialsEntry {
+    std::string UUID;
+    std::string Username;
+    std::string Password;
+    std::string Domain;
+    std::string Note;
+    std::string Source;
+    std::string Type;
+    std::string TimeDate;
+} HcCredentialsEntry;
+
 class IHcLogs
 {
 public:
@@ -275,6 +286,41 @@ public:
     virtual auto HcPayloadDeleteProfile(
         const std::string& profile_name
     ) -> void = 0;
+
+    //
+    // credentials management
+    //
+
+    virtual auto HcCredentialsList(
+        void
+    ) -> std::vector<HcCredentialsEntry> = 0;
+
+    virtual auto HcCredentialsAdd(
+        const std::string& username,
+        const std::string& password,
+        const std::string& domain,
+        const std::string& note,
+        const std::string& source,
+        const std::string& pass_type
+    ) -> void = 0;
+
+    virtual auto HcCredentialsEdit(
+        const std::string& uuid,
+        const std::string& username,
+        const std::string& password,
+        const std::string& domain,
+        const std::string& note,
+        const std::string& source,
+        const std::string& pass_type
+    ) -> void = 0;
+
+    virtual auto HcCredentialsRemove(
+        const std::string& uuid
+    ) -> void = 0;
+
+    virtual auto HcCredentialsPopup(
+        void
+    ) -> std::optional<HcCredentialsEntry> = 0;
 
     //
     // some util functions
