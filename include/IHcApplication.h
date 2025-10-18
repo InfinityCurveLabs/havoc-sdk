@@ -318,7 +318,7 @@ public:
         const std::string& uuid
     ) -> void = 0;
 
-    virtual auto HcCredentialsPopup(
+    virtual auto HcCredentialsPopupSelect(
         void
     ) -> std::vector<HcCredentialsEntry> = 0;
 
