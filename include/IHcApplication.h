@@ -320,7 +320,7 @@ public:
 
     virtual auto HcCredentialsPopup(
         void
-    ) -> std::optional<HcCredentialsEntry> = 0;
+    ) -> std::vector<HcCredentialsEntry> = 0;
 
     //
     // some util functions
