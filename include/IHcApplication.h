@@ -161,6 +161,7 @@ public:
         PositionMiddle = 1 << 1,
         PositionLast   = 1 << 2,
         MultiSelect    = 1 << 3,
+        MultiArray     = 1 << 4,
 
         Default = PositionMiddle | MultiSelect,
     };
